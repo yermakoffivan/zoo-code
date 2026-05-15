@@ -393,7 +393,7 @@ const vercelAiGatewaySchema = baseProviderSettingsSchema.extend({
 })
 
 const zooGatewaySchema = baseProviderSettingsSchema.extend({
-	zooGatewayApiKey: z.string().optional(),
+	zooSessionToken: z.string().optional(),
 	zooGatewayModelId: z.string().optional(),
 	zooGatewayBaseUrl: z.string().optional(),
 })

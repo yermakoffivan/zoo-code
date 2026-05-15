@@ -1682,12 +1682,31 @@ export class ClineProvider
 		await this.upsertProviderProfile(currentApiConfigName, newConfiguration)
 	}
 
-	// Zoo Code Auth (for observability telemetry)
+	// Zoo Code Auth
 
-	async handleZooCodeCallback(_token: string) {
+	async handleZooCodeCallback(token: string) {
 		// Auth mutation (token storage, subscription check, success toast) was already
 		// performed by handleAuthCallback() in handleUri.ts before this method was called.
-		// This method only needs to refresh the webview state to reflect the new auth status.
+		// Auto-populate the zoo-gateway provider profile with the session token so that
+		// ZooGatewayHandler can authenticate without any manual user input.
+		try {
+			const { apiConfiguration, currentApiConfigName = "default" } = await this.getState()
+			const profileName = "Zoo Gateway"
+			const newConfiguration: ProviderSettings = {
+				...apiConfiguration,
+				apiProvider: "zoo-gateway",
+				zooSessionToken: token,
+				zooGatewayModelId: apiConfiguration.zooGatewayModelId,
+				zooGatewayBaseUrl: apiConfiguration.zooGatewayBaseUrl,
+			}
+			await this.upsertProviderProfile(profileName, newConfiguration)
+		} catch (error) {
+			this.log(
+				`[handleZooCodeCallback] Failed to auto-populate zoo-gateway profile: ${
+					error instanceof Error ? error.message : String(error)
+				}`,
+			)
+		}
 		await this.postStateToWebview()
 	}
 

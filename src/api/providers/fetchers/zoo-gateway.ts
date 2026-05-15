@@ -61,10 +61,10 @@ export async function getZooGatewayModels(options?: ApiHandlerOptions): Promise<
 	const models: Record<string, ModelInfo> = {}
 	const baseURL = options?.zooGatewayBaseUrl ?? "https://zoocode.dev/api/gateway/v1"
 
-	// Build headers - Zoo Gateway requires authentication
+	// Build headers - Zoo Gateway requires authentication via the zoo_ext_ session token
 	const headers: Record<string, string> = {}
-	if (options?.zooGatewayApiKey) {
-		headers["Authorization"] = `Bearer ${options.zooGatewayApiKey}`
+	if (options?.zooSessionToken) {
+		headers["Authorization"] = `Bearer ${options.zooSessionToken}`
 	}
 
 	try {

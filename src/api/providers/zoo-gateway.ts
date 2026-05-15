@@ -33,7 +33,7 @@ export class ZooGatewayHandler extends RouterProvider implements SingleCompletio
 			options,
 			name: "zoo-gateway",
 			baseURL,
-			apiKey: options.zooGatewayApiKey,
+			apiKey: options.zooSessionToken,
 			modelId: options.zooGatewayModelId,
 			defaultModelId: zooGatewayDefaultModelId,
 			defaultModelInfo: zooGatewayDefaultModelInfo,
@@ -53,7 +53,7 @@ export class ZooGatewayHandler extends RouterProvider implements SingleCompletio
 		// Recreate client with enrichment headers
 		;(this as any).client = new OpenAI({
 			baseURL,
-			apiKey: options.zooGatewayApiKey ?? "not-provided",
+			apiKey: options.zooSessionToken ?? "not-provided",
 			defaultHeaders: {
 				...DEFAULT_HEADERS,
 				...enrichmentHeaders,

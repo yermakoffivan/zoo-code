@@ -101,7 +101,7 @@ async function fetchModelsFromProvider(options: GetModelsOptions): Promise<Model
 			models = await getDeepSeekModels(options.baseUrl, options.apiKey)
 			break
 		case "zoo-gateway":
-			models = await getZooGatewayModels({ zooGatewayApiKey: options.apiKey, zooGatewayBaseUrl: options.baseUrl })
+			models = await getZooGatewayModels({ zooSessionToken: options.apiKey, zooGatewayBaseUrl: options.baseUrl })
 			break
 		default: {
 			// Ensures router is exhaustively checked if RouterName is a strict union.
