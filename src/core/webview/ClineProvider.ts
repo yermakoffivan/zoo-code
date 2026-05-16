@@ -1690,10 +1690,10 @@ export class ClineProvider
 		// Save the zoo-gateway provider profile with the session token so that
 		// ZooGatewayHandler can authenticate without any manual user input.
 		//
-		// activate: false — do NOT switch the active provider or rebuild the current
-		// task's API handler. The user must explicitly select Zoo Gateway in settings.
-		// Passing activate: true (the default) would call updateTaskApiHandlerIfNeeded
-		// with forceRebuild: true, silently switching providers mid-conversation.
+		// activate: true ONLY if Zoo Gateway is already the active profile — this pushes
+		// the new token to the in-memory handler so the current task picks it up immediately.
+		// Otherwise activate: false — do NOT switch providers mid-conversation. The user
+		// must explicitly select Zoo Gateway in settings if they want to use it.
 		try {
 			const { apiConfiguration } = await this.getState()
 			const profileName = "Zoo Gateway"
@@ -1704,7 +1704,12 @@ export class ClineProvider
 				zooGatewayModelId: apiConfiguration.zooGatewayModelId,
 				zooGatewayBaseUrl: apiConfiguration.zooGatewayBaseUrl,
 			}
-			await this.upsertProviderProfile(profileName, newConfiguration, false)
+
+			// Check if Zoo Gateway is the currently active profile
+			const currentApiConfigName = this.contextProxy.getValues().currentApiConfigName
+			const isZooGatewayActive = currentApiConfigName === profileName
+
+			await this.upsertProviderProfile(profileName, newConfiguration, isZooGatewayActive)
 		} catch (error) {
 			this.log(
 				`[handleZooCodeCallback] Failed to save zoo-gateway profile: ${
