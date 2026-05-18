@@ -47,6 +47,7 @@ import type { Anthropic } from "@anthropic-ai/sdk"
 
 // Get access to the mocked functions
 const mockConverseStreamCommand = vi.mocked(ConverseStreamCommand)
+const mockConverseCommand = vi.mocked(ConverseCommand)
 const mockBedrockRuntimeClient = vi.mocked(BedrockRuntimeClient)
 
 describe("AwsBedrockHandler", () => {
@@ -894,6 +895,35 @@ describe("AwsBedrockHandler", () => {
 			expect(commandArg.inferenceConfig.temperature).toBeUndefined()
 		})
 
+		it("should map xhigh reasoning effort to max for Claude Opus 4.7 adaptive thinking", async () => {
+			const handler = new AwsBedrockHandler({
+				apiModelId: "anthropic.claude-opus-4-7",
+				awsAccessKey: "test",
+				awsSecretKey: "test",
+				awsRegion: "us-east-1",
+				enableReasoningEffort: true,
+				reasoningEffort: "xhigh",
+			})
+
+			const messages: Anthropic.Messages.MessageParam[] = [
+				{
+					role: "user",
+					content: "Test message",
+				},
+			]
+
+			const generator = handler.createMessage("", messages)
+			await generator.next()
+
+			expect(mockConverseStreamCommand).toHaveBeenCalled()
+			const commandArg = mockConverseStreamCommand.mock.calls[0][0] as any
+
+			expect(commandArg.additionalModelRequestFields.thinking).toEqual({
+				type: "adaptive",
+				effort: "max",
+			})
+		})
+
 		it("should use global inference for Claude Opus 4.7 when enabled", () => {
 			const handler = new AwsBedrockHandler({
 				apiModelId: "anthropic.claude-opus-4-7",
@@ -1390,6 +1420,24 @@ describe("AwsBedrockHandler", () => {
 			const systemBlocks = commandArg.system
 			const hasCachePoint = systemBlocks?.some((block: any) => block.cachePoint !== undefined)
 			expect(hasCachePoint).toBe(false)
+		})
+	})
+
+	describe("completePrompt", () => {
+		it("should omit temperature for Claude Opus 4.7", async () => {
+			const handler = new AwsBedrockHandler({
+				apiModelId: "anthropic.claude-opus-4-7",
+				awsAccessKey: "test",
+				awsSecretKey: "test",
+				awsRegion: "us-east-1",
+				modelTemperature: 0.4,
+			})
+
+			await handler.completePrompt("Test prompt")
+
+			expect(mockConverseCommand).toHaveBeenCalled()
+			const commandArg = mockConverseCommand.mock.calls[0][0] as any
+			expect(commandArg.inferenceConfig.temperature).toBeUndefined()
 		})
 	})
 })

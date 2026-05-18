@@ -291,6 +291,30 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 		this.client = new BedrockRuntimeClient(clientConfig)
 	}
 
+	private getAdaptiveThinkingEffort(): "low" | "medium" | "high" | "max" | undefined {
+		switch (this.options.reasoningEffort) {
+			case "low":
+			case "medium":
+			case "high":
+				return this.options.reasoningEffort
+			case "xhigh":
+				return "max"
+			default:
+				return undefined
+		}
+	}
+
+	private getInferenceConfig(modelConfig: {
+		info: ModelInfo
+		maxTokens?: number
+		temperature?: number
+	}): BedrockInferenceConfig {
+		return {
+			maxTokens: modelConfig.maxTokens || (modelConfig.info.maxTokens as number),
+			temperature: modelConfig.temperature,
+		}
+	}
+
 	// Helper to guess model info from custom modelId string if not in bedrockModels
 	private guessModelInfoFromId(modelId: string): Partial<ModelInfo> {
 		// Define a mapping for model ID patterns and their configurations
@@ -399,16 +423,7 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 
 		if ((isThinkingExplicitlyEnabled || isThinkingEnabledBySettings) && modelConfig.info.supportsReasoningBudget) {
 			thinkingEnabled = true
-			const adaptiveThinkingEffort = (() => {
-				switch (this.options.reasoningEffort) {
-					case "low":
-					case "medium":
-					case "high":
-						return this.options.reasoningEffort
-					default:
-						return undefined
-				}
-			})()
+			const adaptiveThinkingEffort = this.getAdaptiveThinkingEffort()
 			additionalModelRequestFields = usesAdaptiveThinking
 				? {
 						thinking: {
@@ -429,10 +444,7 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 			})
 		}
 
-		const inferenceConfig: BedrockInferenceConfig = {
-			maxTokens: modelConfig.maxTokens || (modelConfig.info.maxTokens as number),
-			temperature: modelConfig.temperature,
-		}
+		const inferenceConfig = this.getInferenceConfig(modelConfig)
 
 		// Check if 1M context is enabled for supported Claude 4 models
 		const is1MContextEnabled =
@@ -767,10 +779,7 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 				modelConfig.reasoning &&
 				modelConfig.reasoningBudget
 
-			const inferenceConfig: BedrockInferenceConfig = {
-				maxTokens: modelConfig.maxTokens || (modelConfig.info.maxTokens as number),
-				temperature: modelConfig.temperature ?? (this.options.modelTemperature as number),
-			}
+			const inferenceConfig = this.getInferenceConfig(modelConfig)
 
 			// For completePrompt, use a unique conversation ID based on the prompt
 			const conversationId = `prompt_${prompt.substring(0, 20)}`
