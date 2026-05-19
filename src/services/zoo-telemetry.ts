@@ -1,9 +1,4 @@
-import {
-	getCachedZooCodeToken,
-	getZooCodeBaseUrl,
-	getCachedSubscriptionStatus,
-	checkSubscriptionStatus,
-} from "./zoo-code-auth"
+import { getCachedZooCodeToken, getZooCodeBaseUrl } from "./zoo-code-auth"
 import { Package } from "../shared/package"
 
 export type LlmTelemetryPayload = {
@@ -22,21 +17,12 @@ export type LlmTelemetryPayload = {
 /**
  * Send LLM telemetry to the Zoo Code observability backend.
  * This is a fire-and-forget operation that silently fails on error.
- * Only sends telemetry for authenticated users with active subscriptions.
+ * Sends telemetry for all authenticated users — free and paid alike.
+ * Retention limits (7 days for free, unlimited for Pro) are enforced server-side.
  */
 export async function sendLlmTelemetry(payload: LlmTelemetryPayload): Promise<void> {
 	const token = getCachedZooCodeToken()
 	if (!token) {
-		return
-	}
-
-	// Check subscription status before sending (uses 5-minute cache)
-	let status = getCachedSubscriptionStatus()
-	if (status === "unknown") {
-		status = await checkSubscriptionStatus().catch(() => "unknown" as const)
-	}
-
-	if (status !== "active") {
 		return
 	}
 

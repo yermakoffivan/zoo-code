@@ -1699,6 +1699,13 @@ export class ClineProvider
 			const currentSettings = this.contextProxy.getProviderSettings()
 			const currentApiConfigName = this.contextProxy.getValues().currentApiConfigName
 
+			// Derive the gateway base URL from ZOO_CODE_BASE_URL so that non-prod environments
+			// (staging, local dev) route completions to the correct backend instead of always
+			// hard-coding production. An already-set value in the profile is NOT preserved here —
+			// it must always align with the auth server the user just authenticated against.
+			const { getZooCodeBaseUrl } = await import("../../services/zoo-code-auth")
+			const derivedGatewayBaseUrl = `${getZooCodeBaseUrl()}/api/gateway/v1`
+
 			// Check if Zoo Gateway is the currently active profile by apiProvider identity,
 			// not by profile name (profile names are user-renameable).
 			const isZooGatewayActive = currentSettings.apiProvider === "zoo-gateway"
@@ -1710,7 +1717,7 @@ export class ClineProvider
 					apiProvider: "zoo-gateway",
 					zooSessionToken: token,
 					zooGatewayModelId: apiConfiguration.zooGatewayModelId,
-					zooGatewayBaseUrl: apiConfiguration.zooGatewayBaseUrl,
+					zooGatewayBaseUrl: derivedGatewayBaseUrl,
 				}
 				await this.upsertProviderProfile(currentApiConfigName, newConfiguration, true)
 			} else {
@@ -1726,16 +1733,18 @@ export class ClineProvider
 						apiProvider: "zoo-gateway",
 						zooSessionToken: token,
 						zooGatewayModelId: apiConfiguration.zooGatewayModelId,
-						zooGatewayBaseUrl: apiConfiguration.zooGatewayBaseUrl,
+						zooGatewayBaseUrl: derivedGatewayBaseUrl,
 					}
 					await this.upsertProviderProfile("Zoo Gateway", newConfiguration, false)
 				} else {
-					// Update every existing zoo-gateway profile with the new token.
+					// Update every existing zoo-gateway profile with the new token and the
+					// derived base URL so that environment-specific routing stays consistent.
 					for (const entry of zooProfiles) {
 						const existing = await this.providerSettingsManager.getProfile({ name: entry.name })
 						const updated: ProviderSettings = {
 							...existing,
 							zooSessionToken: token,
+							zooGatewayBaseUrl: derivedGatewayBaseUrl,
 						}
 						await this.providerSettingsManager.saveConfig(entry.name, updated)
 					}
