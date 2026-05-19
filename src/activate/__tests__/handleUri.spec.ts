@@ -6,25 +6,32 @@ vi.mock("vscode", () => ({
 
 import * as vscode from "vscode"
 
-const { mockGetVisibleInstance, mockHandleZooCodeAuthCallback, mockSetZooCodeUserInfo, mockVisibleProvider } =
-	vi.hoisted(() => {
-		const mockVisibleProvider = {
-			handleOpenRouterCallback: vi.fn(),
-			handleRequestyCallback: vi.fn(),
-			handleZooCodeCallback: vi.fn(),
-		} as any
+const {
+	mockGetVisibleInstance,
+	mockGetAllInstances,
+	mockHandleZooCodeAuthCallback,
+	mockSetZooCodeUserInfo,
+	mockVisibleProvider,
+} = vi.hoisted(() => {
+	const mockVisibleProvider = {
+		handleOpenRouterCallback: vi.fn(),
+		handleRequestyCallback: vi.fn(),
+		handleZooCodeCallback: vi.fn(),
+	} as any
 
-		return {
-			mockGetVisibleInstance: vi.fn(() => mockVisibleProvider),
-			mockHandleZooCodeAuthCallback: vi.fn(),
-			mockSetZooCodeUserInfo: vi.fn(),
-			mockVisibleProvider,
-		}
-	})
+	return {
+		mockGetVisibleInstance: vi.fn(() => mockVisibleProvider),
+		mockGetAllInstances: vi.fn(() => [mockVisibleProvider]),
+		mockHandleZooCodeAuthCallback: vi.fn(),
+		mockSetZooCodeUserInfo: vi.fn(),
+		mockVisibleProvider,
+	}
+})
 
 vi.mock("../../core/webview/ClineProvider", () => ({
 	ClineProvider: {
 		getVisibleInstance: mockGetVisibleInstance,
+		getAllInstances: mockGetAllInstances,
 	},
 }))
 
@@ -39,6 +46,7 @@ describe("handleUri", () => {
 	beforeEach(() => {
 		vi.clearAllMocks()
 		mockGetVisibleInstance.mockReturnValue(mockVisibleProvider)
+		mockGetAllInstances.mockReturnValue([mockVisibleProvider])
 	})
 
 	it("ignores legacy cloud auth callback", async () => {
@@ -54,8 +62,9 @@ describe("handleUri", () => {
 		)
 	})
 
-	it("stores callback user info even when no webview is visible", async () => {
+	it("stores callback user info even when no provider instances exist", async () => {
 		mockGetVisibleInstance.mockReturnValue(null)
+		mockGetAllInstances.mockReturnValue([])
 		mockHandleZooCodeAuthCallback.mockResolvedValue(true)
 
 		await handleUri({
@@ -69,6 +78,7 @@ describe("handleUri", () => {
 			email: "jane@example.com",
 			image: "https://example.com/avatar.png",
 		})
+		// No provider instances exist, so handleZooCodeCallback should not be called
 		expect(mockVisibleProvider.handleZooCodeCallback).not.toHaveBeenCalled()
 	})
 
