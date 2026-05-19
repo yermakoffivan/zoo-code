@@ -1,10 +1,9 @@
 import axios from "axios"
 
 import type { ModelInfo } from "@roo-code/types"
-import { VERCEL_AI_GATEWAY_VISION_ONLY_MODELS, VERCEL_AI_GATEWAY_VISION_AND_TOOLS_MODELS } from "@roo-code/types"
 
 import type { ApiHandlerOptions } from "../../../shared/api"
-import { parseApiPrice } from "../../../shared/cost"
+import { getZooCodeBaseUrl } from "../../../services/zoo-code-auth"
 
 // Reuse the same schemas and parsing logic from vercel-ai-gateway since the API format is identical
 import { type VercelAiGatewayModel, parseVercelAiGatewayModel } from "./vercel-ai-gateway"
@@ -59,7 +58,7 @@ type ZooGatewayModelsResponse = z.infer<typeof zooGatewayModelsResponseSchema>
 
 export async function getZooGatewayModels(options?: ApiHandlerOptions): Promise<Record<string, ModelInfo>> {
 	const models: Record<string, ModelInfo> = {}
-	const baseURL = options?.zooGatewayBaseUrl ?? "https://www.zoocode.dev/api/gateway/v1"
+	const baseURL = options?.zooGatewayBaseUrl ?? `${getZooCodeBaseUrl()}/api/gateway/v1`
 
 	// Build headers - Zoo Gateway requires authentication via the zoo_ext_ session token
 	const headers: Record<string, string> = {}

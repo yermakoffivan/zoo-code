@@ -9,6 +9,7 @@ import {
 } from "@roo-code/types"
 
 import { ApiHandlerOptions } from "../../shared/api"
+import { getZooCodeBaseUrl } from "../../services/zoo-code-auth"
 
 import { ApiStream } from "../transform/stream"
 import { convertToOpenAiMessages } from "../transform/openai-format"
@@ -27,7 +28,7 @@ interface ZooGatewayUsage extends OpenAI.CompletionUsage {
 
 export class ZooGatewayHandler extends RouterProvider implements SingleCompletionHandler {
 	constructor(options: ApiHandlerOptions) {
-		const baseURL = options.zooGatewayBaseUrl ?? "https://www.zoocode.dev/api/gateway/v1"
+		const baseURL = options.zooGatewayBaseUrl ?? `${getZooCodeBaseUrl()}/api/gateway/v1`
 
 		// Fail fast with a clear message instead of waiting for a 401.
 		// The token is set automatically by handleZooCodeCallback() after the user
