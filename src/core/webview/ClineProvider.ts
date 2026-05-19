@@ -916,22 +916,26 @@ export class ClineProvider
 		const token = getCachedZooCodeToken()
 		if (!token) return
 
-		// Check if a zoo-gateway profile exists AND has a token. A profile may exist but be
-		// empty (e.g., imported settings without credentials, or auth completed while no
-		// provider instance was open). In that case, we still need to write the token.
+		// Check if a zoo-gateway profile exists AND has the CURRENT token. A profile may exist but:
+		// - be empty (imported settings without credentials)
+		// - have a stale token (user re-authenticated while no provider instance was open)
+		// In either case, we need to write the fresh token.
 		const allProfiles = await this.providerSettingsManager.listConfig()
 		const zooGatewayProfile = allProfiles.find((p) => p.apiProvider === "zoo-gateway")
 
 		if (zooGatewayProfile) {
-			// Profile exists — check if it has a token
+			// Profile exists — check if it has the CURRENT token (not just any token)
 			try {
 				const fullProfile = await this.providerSettingsManager.getProfile({ name: zooGatewayProfile.name })
-				if (fullProfile.zooSessionToken) {
-					// Profile exists and has a token — nothing to do
+				if (fullProfile.zooSessionToken === token) {
+					// Profile exists and has the current token — nothing to do
 					return
 				}
+				// Token mismatch or missing — log and proceed to update
 				this.log(
-					"[ensureZooGatewayProfileSeeded] Existing zoo-gateway profile has no token, updating with cached token",
+					fullProfile.zooSessionToken
+						? "[ensureZooGatewayProfileSeeded] Token mismatch (stale session?), updating with current token"
+						: "[ensureZooGatewayProfileSeeded] Existing zoo-gateway profile has no token, updating with cached token",
 				)
 			} catch {
 				// Profile lookup failed — proceed to seed
@@ -941,7 +945,7 @@ export class ClineProvider
 			this.log("[ensureZooGatewayProfileSeeded] No zoo-gateway profile found, creating one")
 		}
 
-		// User has token but either no profile or profile without token — seed it
+		// User has token but either no profile, profile without token, or stale token — seed it
 		await this.handleZooCodeCallback(token)
 	}
 
