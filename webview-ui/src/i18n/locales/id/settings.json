@@ -867,7 +867,7 @@
 		}
 	},
 	"modelPicker": {
-		"automaticFetch": "Ekstensi secara otomatis mengambil daftar model terbaru yang tersedia di <serviceLink>{{serviceName}}</serviceLink>. Jika kamu tidak yakin model mana yang harus dipilih, Zoo Code bekerja terbaik dengan <defaultModelLink>{{defaultModelId}}</defaultModelLink>. Kamu juga dapat mencoba mencari \"free\" untuk opsi tanpa biaya yang saat ini tersedia.",
+		"automaticFetch": "Ekstensi secara otomatis mengambil daftar model terbaru yang tersedia di <serviceLink>{{serviceName}}</serviceLink>. Jika kamu tidak yakin model mana yang harus dipilih, Zoo Code bekerja terbaik dengan <defaultModelLink>{{defaultModelId}}</defaultModelLink>.",
 		"label": "Model",
 		"searchPlaceholder": "Cari",
 		"noMatchFound": "Tidak ada yang cocok ditemukan",

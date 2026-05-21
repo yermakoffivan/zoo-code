@@ -867,7 +867,7 @@
 		}
 	},
 	"modelPicker": {
-		"automaticFetch": "एक्सटेंशन <serviceLink>{{serviceName}}</serviceLink> पर उपलब्ध मॉडलों की नवीनतम सूची स्वचालित रूप से प्राप्त करता है। यदि आप अनिश्चित हैं कि कौन सा मॉडल चुनना है, तो Zoo Code <defaultModelLink>{{defaultModelId}}</defaultModelLink> के साथ सबसे अच्छा काम करता है। आप वर्तमान में उपलब्ध निःशुल्क विकल्पों के लिए \"free\" भी खोज सकते हैं।",
+		"automaticFetch": "एक्सटेंशन <serviceLink>{{serviceName}}</serviceLink> पर उपलब्ध मॉडलों की नवीनतम सूची स्वचालित रूप से प्राप्त करता है। यदि आप अनिश्चित हैं कि कौन सा मॉडल चुनना है, तो Zoo Code <defaultModelLink>{{defaultModelId}}</defaultModelLink> के साथ सबसे अच्छा काम करता है।",
 		"label": "मॉडल",
 		"searchPlaceholder": "खोजें",
 		"noMatchFound": "कोई मिलान नहीं मिला",

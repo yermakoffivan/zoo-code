@@ -867,7 +867,7 @@
 		}
 	},
 	"modelPicker": {
-		"automaticFetch": "Tiện ích mở rộng tự động lấy danh sách mới nhất các mô hình có sẵn trên <serviceLink>{{serviceName}}</serviceLink>. Nếu bạn không chắc chắn nên chọn mô hình nào, Zoo Code hoạt động tốt nhất với <defaultModelLink>{{defaultModelId}}</defaultModelLink>. Bạn cũng có thể thử tìm kiếm \"free\" cho các tùy chọn miễn phí hiện có.",
+		"automaticFetch": "Tiện ích mở rộng tự động lấy danh sách mới nhất các mô hình có sẵn trên <serviceLink>{{serviceName}}</serviceLink>. Nếu bạn không chắc chắn nên chọn mô hình nào, Zoo Code hoạt động tốt nhất với <defaultModelLink>{{defaultModelId}}</defaultModelLink>.",
 		"label": "Mô hình",
 		"searchPlaceholder": "Tìm kiếm",
 		"noMatchFound": "Không tìm thấy kết quả",

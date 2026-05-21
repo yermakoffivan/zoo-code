@@ -877,7 +877,7 @@
 		}
 	},
 	"modelPicker": {
-		"automaticFetch": "此擴充功能會自動從 <serviceLink>{{serviceName}}</serviceLink> 取得最新的可用模型清單。如果不確定要選哪個模型，建議使用 <defaultModelLink>{{defaultModelId}}</defaultModelLink>，這是與 Zoo Code 最佳搭配的模型。您也可以搜尋「free」來檢視目前可用的免費選項。",
+		"automaticFetch": "此擴充功能會自動從 <serviceLink>{{serviceName}}</serviceLink> 取得最新的可用模型清單。如果不確定要選哪個模型，建議使用 <defaultModelLink>{{defaultModelId}}</defaultModelLink>，這是與 Zoo Code 最佳搭配的模型。",
 		"label": "模型",
 		"searchPlaceholder": "搜尋",
 		"noMatchFound": "找不到符合的結果",

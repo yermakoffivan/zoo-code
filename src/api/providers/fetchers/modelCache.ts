@@ -127,7 +127,10 @@ async function fetchModelsFromProvider(options: GetModelsOptions): Promise<Model
 export const getModels = async (options: GetModelsOptions): Promise<ModelRecord> => {
 	const { provider } = options
 
-	let models = getModelsFromCache(provider)
+	// Always fetch fresh to prevent serving stale models from different auth contexts.
+	const shouldSkipCache = provider === "zoo-gateway"
+
+	let models = shouldSkipCache ? undefined : getModelsFromCache(provider)
 
 	if (models) {
 		return models
@@ -139,13 +142,14 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 
 		// Only cache non-empty results to prevent persisting failed API responses
 		// Empty results could indicate API failure rather than "no models exist"
-		if (modelCount > 0) {
+		// Zoo Gateway models are user-specific - skip caching entirely
+		if (modelCount > 0 && !shouldSkipCache) {
 			memoryCache.set(provider, models)
 
 			await writeModels(provider, models).catch((err) =>
 				console.error(`[MODEL_CACHE] Error writing ${provider} models to file cache:`, err),
 			)
-		} else {
+		} else if (modelCount === 0) {
 			TelemetryService.instance.captureEvent(TelemetryEventName.MODEL_CACHE_EMPTY_RESPONSE, {
 				provider,
 				context: "getModels",

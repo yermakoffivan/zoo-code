@@ -867,7 +867,7 @@
 		}
 	},
 	"modelPicker": {
-		"automaticFetch": "Расширение автоматически получает актуальный список моделей на <serviceLink>{{serviceName}}</serviceLink>. Если не уверены, что выбрать, Zoo Code лучше всего работает с <defaultModelLink>{{defaultModelId}}</defaultModelLink>. Также попробуйте поискать \"free\" для бесплатных вариантов.",
+		"automaticFetch": "Расширение автоматически получает актуальный список моделей на <serviceLink>{{serviceName}}</serviceLink>. Если не уверены, что выбрать, Zoo Code лучше всего работает с <defaultModelLink>{{defaultModelId}}</defaultModelLink>.",
 		"label": "Модель",
 		"searchPlaceholder": "Поиск",
 		"noMatchFound": "Совпадений не найдено",

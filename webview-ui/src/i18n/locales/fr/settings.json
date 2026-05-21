@@ -867,7 +867,7 @@
 		}
 	},
 	"modelPicker": {
-		"automaticFetch": "L'extension récupère automatiquement la liste la plus récente des modèles disponibles sur <serviceLink>{{serviceName}}</serviceLink>. Si vous ne savez pas quel modèle choisir, Zoo Code fonctionne mieux avec <defaultModelLink>{{defaultModelId}}</defaultModelLink>. Vous pouvez également rechercher \"free\" pour les options gratuites actuellement disponibles.",
+		"automaticFetch": "L'extension récupère automatiquement la liste la plus récente des modèles disponibles sur <serviceLink>{{serviceName}}</serviceLink>. Si vous ne savez pas quel modèle choisir, Zoo Code fonctionne mieux avec <defaultModelLink>{{defaultModelId}}</defaultModelLink>.",
 		"label": "Modèle",
 		"searchPlaceholder": "Rechercher",
 		"noMatchFound": "Aucune correspondance trouvée",
