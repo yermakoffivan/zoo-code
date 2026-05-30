@@ -50,7 +50,8 @@ go—and, importantly, where they don't.
   [zoocode.dev Privacy Policy](https://www.zoocode.dev/legal/privacy). We do
   not record the content of your prompts, your code, or the model's response
   text. Free plan users can view gateway usage in the dashboard for the most
-  recent 7 days; Pro and higher plan users can view the full retention window.
+  recent 7 days; Pro and Team plan users can view the most recent 180 days.
+  All Zoo Gateway request logs are automatically deleted after 180 days.
 - **Marketplace Requests**: When you browse or search the Marketplace for Model
   Configuration Profiles (MCPs) or Custom Modes, Zoo Code makes a secure API
   call to Zoo Code's backend servers to retrieve listing information. These
