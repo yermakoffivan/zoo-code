@@ -53,7 +53,7 @@
 You can find a quick guide for migrating from Roo Code to Zoo Code in the [Roo→Zoo migration guide](https://docs.zoocode.dev/roo-to-zoo-migration). We plan to try and help users as they transition over, we have our [Reddit](https://www.reddit.com/r/ZooCode) and [Discord](https://discord.gg/VxfP4Vx3gX)
 for this exact support, so if you are having problems or if you have question, jump on and ask.
 
-## What's New in v3.58.0
+## What's New in v3.58.1
 
 - **Zoo Gateway** — connect through a managed gateway with multi-profile auth support
 - **Gemini 3.5 Flash** — a fast, capable Google model now available from your provider settings
@@ -65,6 +65,7 @@ for this exact support, so if you are having problems or if you have question, j
 - Fix React crash from malformed follow-up suggestion mode
 - Fix OpenAI temperature being omitted when no custom value is set
 - Handle per-key failures during settings import
+- Fix: Remove unsupported `--no-absolute-filenames` tar argument (#491 by @kazenshi, PR #492 by @kazenshi)
 - Security updates: mermaid v11.15.0, axios v1.16.0
 
 <details>
@@ -89,7 +90,7 @@ for this exact support, so if you are having problems or if you have question, j
 - [简体中文](locales/zh-CN/README.md)
 - [繁體中文](locales/zh-TW/README.md)
 - ...
-  </details>
+      </details>
 
 ---
 
