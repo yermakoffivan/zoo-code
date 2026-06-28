@@ -161,6 +161,11 @@ function getSelectedModel({
 			const routerInfo = routerModels.requesty?.[id]
 			return { id, info: routerInfo }
 		}
+		case "umans": {
+			const id = getValidatedModelId(apiConfiguration.umansModelId, routerModels.umans, defaultModelId)
+			const routerInfo = routerModels.umans?.[id]
+			return { id, info: routerInfo }
+		}
 		case "unbound": {
 			const id = getValidatedModelId(apiConfiguration.unboundModelId, routerModels.unbound, defaultModelId)
 			const routerInfo = routerModels.unbound?.[id]

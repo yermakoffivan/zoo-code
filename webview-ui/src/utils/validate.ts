@@ -52,6 +52,11 @@ function validateModelsAndKeysProvided(
 				return i18next.t("settings:validation.apiKey")
 			}
 			break
+		case "umans":
+			if (!apiConfiguration.umansApiKey) {
+				return i18next.t("settings:validation.apiKey")
+			}
+			break
 		case "unbound":
 			if (!apiConfiguration.unboundApiKey) {
 				return i18next.t("settings:validation.apiKey")

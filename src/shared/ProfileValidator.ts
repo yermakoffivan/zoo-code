@@ -75,6 +75,8 @@ export class ProfileValidator {
 				return profile.vsCodeLmModelSelector?.id
 			case "openrouter":
 				return profile.openRouterModelId
+			case "umans":
+				return profile.umansModelId
 			case "ollama":
 				return profile.ollamaModelId
 			case "requesty":

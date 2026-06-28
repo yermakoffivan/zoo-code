@@ -65,6 +65,7 @@ import {
 	Poe,
 	QwenCode,
 	Requesty,
+	Umans,
 	SambaNova,
 	Unbound,
 	Vertex,
@@ -443,6 +444,17 @@ const ApiOptions = ({
 							setApiConfigurationField={setApiConfigurationField}
 							routerModels={routerModels}
 							refetchRouterModels={refetchRouterModels}
+							organizationAllowList={organizationAllowList}
+							modelValidationError={modelValidationError}
+							simplifySettings={fromWelcomeView}
+						/>
+					)}
+
+					{selectedProvider === "umans" && (
+						<Umans
+							apiConfiguration={apiConfiguration}
+							setApiConfigurationField={setApiConfigurationField}
+							routerModels={routerModels}
 							organizationAllowList={organizationAllowList}
 							modelValidationError={modelValidationError}
 							simplifySettings={fromWelcomeView}

@@ -38,6 +38,7 @@ export const DEFAULT_CONSECUTIVE_MISTAKE_LIMIT = 3
 
 export const dynamicProviders = [
 	"openrouter",
+	"umans",
 	"vercel-ai-gateway",
 	"zoo-gateway",
 	"litellm",
@@ -219,6 +220,11 @@ const openRouterSchema = baseProviderSettingsSchema.extend({
 	openRouterModelId: z.string().optional(),
 	openRouterBaseUrl: z.string().optional(),
 	openRouterSpecificProvider: z.string().optional(),
+})
+
+const umansSchema = baseProviderSettingsSchema.extend({
+	umansApiKey: z.string().optional(),
+	umansModelId: z.string().optional(),
 })
 
 const bedrockSchema = apiModelIdProviderModelSchema.extend({
@@ -433,6 +439,7 @@ const defaultSchema = z.object({
 export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProvider", [
 	anthropicSchema.merge(z.object({ apiProvider: z.literal("anthropic") })),
 	openRouterSchema.merge(z.object({ apiProvider: z.literal("openrouter") })),
+	umansSchema.merge(z.object({ apiProvider: z.literal("umans") })),
 	bedrockSchema.merge(z.object({ apiProvider: z.literal("bedrock") })),
 	vertexSchema.merge(z.object({ apiProvider: z.literal("vertex") })),
 	openAiSchema.merge(z.object({ apiProvider: z.literal("openai") })),
@@ -470,6 +477,7 @@ export const providerSettingsSchema = z.object({
 	apiProvider: providerNamesWithRetiredSchema.optional(),
 	...anthropicSchema.shape,
 	...openRouterSchema.shape,
+	...umansSchema.shape,
 	...bedrockSchema.shape,
 	...vertexSchema.shape,
 	...openAiSchema.shape,
@@ -522,6 +530,7 @@ export const PROVIDER_SETTINGS_KEYS = providerSettingsSchema.keyof().options
 export const modelIdKeys = [
 	"apiModelId",
 	"openRouterModelId",
+	"umansModelId",
 	"openAiModelId",
 	"anthropicCustomModelId",
 	"ollamaModelId",
@@ -554,6 +563,7 @@ export const isTypicalProvider = (key: unknown): key is TypicalProvider =>
 export const modelIdKeysByProvider: Record<TypicalProvider, ModelIdKey> = {
 	anthropic: "apiModelId",
 	openrouter: "openRouterModelId",
+	umans: "umansModelId",
 	bedrock: "apiModelId",
 	vertex: "apiModelId",
 	"openai-codex": "apiModelId",
@@ -709,6 +719,7 @@ export const MODELS_BY_PROVIDER: Record<
 	poe: { id: "poe", label: "Poe", models: [] },
 	litellm: { id: "litellm", label: "LiteLLM", models: [] },
 	openrouter: { id: "openrouter", label: "OpenRouter", models: [] },
+	umans: { id: "umans", label: "Umans", models: [] },
 	requesty: { id: "requesty", label: "Requesty", models: [] },
 	unbound: { id: "unbound", label: "Unbound", models: [] },
 	"vercel-ai-gateway": { id: "vercel-ai-gateway", label: "Vercel AI Gateway", models: [] },

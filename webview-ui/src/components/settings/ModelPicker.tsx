@@ -29,6 +29,7 @@ import { ApiErrorMessage } from "./ApiErrorMessage"
 type ModelIdKey = keyof Pick<
 	ProviderSettings,
 	| "openRouterModelId"
+	| "umansModelId"
 	| "requestyModelId"
 	| "unboundModelId"
 	| "openAiModelId"
