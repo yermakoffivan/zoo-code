@@ -98,12 +98,11 @@ function validateModelsAndKeysProvided(
 			}
 			break
 		case "anthropic-custom":
-			if (
-				!apiConfiguration.anthropicCustomBaseUrl ||
-				!apiConfiguration.anthropicCustomApiKey ||
-				!apiConfiguration.anthropicCustomModelId
-			) {
-				return i18next.t("settings:validation.openAi")
+			if (!apiConfiguration.anthropicCustomApiKey) {
+				return i18next.t("settings:validation.apiKey")
+			}
+			if (!apiConfiguration.anthropicCustomModelId) {
+				return i18next.t("settings:validation.modelId")
 			}
 			break
 		case "ollama":

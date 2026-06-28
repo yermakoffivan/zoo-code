@@ -1,14 +1,19 @@
-import { useState, useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Checkbox } from "vscrui"
-import { VSCodeButton, VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
+import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
 
-import { type ProviderSettings, type OrganizationAllowList, openAiModelInfoSaneDefaults } from "@roo-code/types"
+import {
+	type ProviderSettings,
+	type OrganizationAllowList,
+	anthropicModels,
+	openAiModelInfoSaneDefaults,
+} from "@roo-code/types"
 
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { Button, StandardTooltip } from "@src/components/ui"
+import { VSCodeButtonLink } from "@src/components/common/VSCodeButtonLink"
 
-import { convertHeadersToObject } from "../utils/headers"
-import { inputEventTransform, noTransform } from "../transforms"
+import { inputEventTransform } from "../transforms"
 import { ModelPicker } from "../ModelPicker"
 
 type AnthropicCustomProps = {
@@ -23,6 +28,8 @@ type AnthropicCustomProps = {
 	simplifySettings?: boolean
 }
 
+const anthropicCustomDefaultModelId = "claude-sonnet-4-5"
+
 export const AnthropicCustom = ({
 	apiConfiguration,
 	setApiConfigurationField,
@@ -32,51 +39,20 @@ export const AnthropicCustom = ({
 }: AnthropicCustomProps) => {
 	const { t } = useAppTranslation()
 
-	const [customHeaders, setCustomHeaders] = useState<[string, string][]>(() => {
-		const headers = apiConfiguration?.anthropicCustomHeaders || {}
-		return Object.entries(headers)
-	})
-
-	const handleAddCustomHeader = useCallback(() => {
-		setCustomHeaders((prev) => [...prev, ["", ""]])
-	}, [])
-
-	const handleUpdateHeaderKey = useCallback((index: number, newKey: string) => {
-		setCustomHeaders((prev) => {
-			const updated = [...prev]
-
-			if (updated[index]) {
-				updated[index] = [newKey, updated[index][1]]
-			}
-
-			return updated
-		})
-	}, [])
-
-	const handleUpdateHeaderValue = useCallback((index: number, newValue: string) => {
-		setCustomHeaders((prev) => {
-			const updated = [...prev]
-
-			if (updated[index]) {
-				updated[index] = [updated[index][0], newValue]
-			}
-
-			return updated
-		})
-	}, [])
-
-	const handleRemoveCustomHeader = useCallback((index: number) => {
-		setCustomHeaders((prev) => prev.filter((_, i) => i !== index))
-	}, [])
+	const [anthropicBaseUrlSelected, setAnthropicBaseUrlSelected] = useState(!!apiConfiguration?.anthropicCustomBaseUrl)
 
 	useEffect(() => {
-		const timer = setTimeout(() => {
-			const headerObject = convertHeadersToObject(customHeaders)
-			setApiConfigurationField("anthropicCustomHeaders", headerObject, false)
-		}, 300)
-
-		return () => clearTimeout(timer)
-	}, [customHeaders, setApiConfigurationField])
+		if (!apiConfiguration.anthropicCustomModelInfo) {
+			setApiConfigurationField(
+				"anthropicCustomModelInfo",
+				{
+					...openAiModelInfoSaneDefaults,
+					...(anthropicModels[anthropicCustomDefaultModelId] || {}),
+				},
+				false,
+			)
+		}
+	}, [apiConfiguration.anthropicCustomModelInfo, setApiConfigurationField])
 
 	const handleInputChange = useCallback(
 		<K extends keyof ProviderSettings, E>(
@@ -89,80 +65,74 @@ export const AnthropicCustom = ({
 		[setApiConfigurationField],
 	)
 
+	const getCustomModelInfo = () => apiConfiguration?.anthropicCustomModelInfo || openAiModelInfoSaneDefaults
+
 	return (
 		<>
-			<VSCodeTextField
-				value={apiConfiguration?.anthropicCustomBaseUrl || ""}
-				type="url"
-				onInput={handleInputChange("anthropicCustomBaseUrl")}
-				placeholder="https://api.anthropic.com"
-				className="w-full">
-				<label className="block font-medium mb-1">{t("settings:providers.openAiBaseUrl")}</label>
-			</VSCodeTextField>
 			<VSCodeTextField
 				value={apiConfiguration?.anthropicCustomApiKey || ""}
 				type="password"
 				onInput={handleInputChange("anthropicCustomApiKey")}
 				placeholder={t("settings:placeholders.apiKey")}
 				className="w-full">
-				<label className="block font-medium mb-1">{t("settings:providers.apiKey")}</label>
+				<label className="block font-medium mb-1">{t("settings:providers.anthropicApiKey")}</label>
 			</VSCodeTextField>
+			<div className="text-sm text-vscode-descriptionForeground -mt-2">
+				{t("settings:providers.apiKeyStorageNotice")}
+			</div>
+			{!apiConfiguration?.anthropicCustomApiKey && (
+				<VSCodeButtonLink href="https://console.anthropic.com/settings/keys" appearance="secondary">
+					{t("settings:providers.getAnthropicApiKey")}
+				</VSCodeButtonLink>
+			)}
+			<div>
+				<Checkbox
+					checked={anthropicBaseUrlSelected}
+					onChange={(checked: boolean) => {
+						setAnthropicBaseUrlSelected(checked)
+
+						if (!checked) {
+							setApiConfigurationField("anthropicCustomBaseUrl", "")
+						}
+					}}>
+					{t("settings:providers.useCustomBaseUrl")}
+				</Checkbox>
+				{anthropicBaseUrlSelected && (
+					<VSCodeTextField
+						value={apiConfiguration?.anthropicCustomBaseUrl || ""}
+						type="url"
+						onInput={handleInputChange("anthropicCustomBaseUrl")}
+						placeholder="https://api.anthropic.com"
+						className="w-full mt-1">
+						<label className="block font-medium mb-1">Base URL</label>
+					</VSCodeTextField>
+				)}
+			</div>
 			<ModelPicker
 				apiConfiguration={apiConfiguration}
-				setApiConfigurationField={setApiConfigurationField}
-				defaultModelId="claude-3-5-sonnet-20241022"
-				models={null}
+				setApiConfigurationField={(field, value, isUserAction) => {
+					setApiConfigurationField(field, value, isUserAction)
+
+					if (field === "anthropicCustomModelId") {
+						setApiConfigurationField(
+							"anthropicCustomModelInfo",
+							{
+								...openAiModelInfoSaneDefaults,
+								...(anthropicModels[value as keyof typeof anthropicModels] || {}),
+							},
+							false,
+						)
+					}
+				}}
+				defaultModelId={anthropicCustomDefaultModelId}
+				models={anthropicModels}
 				modelIdKey="anthropicCustomModelId"
-				serviceName="Anthropic Custom"
+				serviceName="Anthropic"
 				serviceUrl="https://docs.anthropic.com"
 				organizationAllowList={organizationAllowList}
 				errorMessage={modelValidationError}
 				simplifySettings={simplifySettings}
 			/>
-			<Checkbox
-				checked={apiConfiguration?.anthropicCustomStreamingEnabled ?? true}
-				onChange={handleInputChange("anthropicCustomStreamingEnabled", noTransform)}>
-				{t("settings:modelInfo.enableStreaming")}
-			</Checkbox>
-
-			{/* Custom Headers UI */}
-			<div className="mb-4">
-				<div className="flex justify-between items-center mb-2">
-					<label className="block font-medium">{t("settings:providers.customHeaders")}</label>
-					<StandardTooltip content={t("settings:common.add")}>
-						<VSCodeButton appearance="icon" onClick={handleAddCustomHeader}>
-							<span className="codicon codicon-add"></span>
-						</VSCodeButton>
-					</StandardTooltip>
-				</div>
-				{!customHeaders.length ? (
-					<div className="text-sm text-vscode-descriptionForeground">
-						{t("settings:providers.noCustomHeaders")}
-					</div>
-				) : (
-					customHeaders.map(([key, value], index) => (
-						<div key={index} className="flex items-center mb-2">
-							<VSCodeTextField
-								value={key}
-								className="flex-1 mr-2"
-								placeholder={t("settings:providers.headerName")}
-								onInput={(e: any) => handleUpdateHeaderKey(index, e.target.value)}
-							/>
-							<VSCodeTextField
-								value={value}
-								className="flex-1 mr-2"
-								placeholder={t("settings:providers.headerValue")}
-								onInput={(e: any) => handleUpdateHeaderValue(index, e.target.value)}
-							/>
-							<StandardTooltip content={t("settings:common.remove")}>
-								<VSCodeButton appearance="icon" onClick={() => handleRemoveCustomHeader(index)}>
-									<span className="codicon codicon-trash"></span>
-								</VSCodeButton>
-							</StandardTooltip>
-						</div>
-					))
-				)}
-			</div>
 
 			<div className="flex flex-col gap-3">
 				<div className="text-sm text-vscode-descriptionForeground whitespace-pre-line">
@@ -171,28 +141,13 @@ export const AnthropicCustom = ({
 
 				<div>
 					<VSCodeTextField
-						value={
-							apiConfiguration?.anthropicCustomModelInfo?.maxTokens?.toString() ||
-							openAiModelInfoSaneDefaults.maxTokens?.toString() ||
-							""
-						}
+						value={getCustomModelInfo().maxTokens?.toString() || ""}
 						type="text"
-						style={{
-							borderColor: (() => {
-								const value = apiConfiguration?.anthropicCustomModelInfo?.maxTokens
-
-								if (!value) {
-									return "var(--vscode-input-border)"
-								}
-
-								return value > 0 ? "var(--vscode-charts-green)" : "var(--vscode-errorForeground)"
-							})(),
-						}}
 						onInput={handleInputChange("anthropicCustomModelInfo", (e) => {
 							const value = parseInt((e.target as HTMLInputElement).value)
 
 							return {
-								...(apiConfiguration?.anthropicCustomModelInfo || openAiModelInfoSaneDefaults),
+								...getCustomModelInfo(),
 								maxTokens: isNaN(value) ? undefined : value,
 							}
 						})}
@@ -209,30 +164,14 @@ export const AnthropicCustom = ({
 
 				<div>
 					<VSCodeTextField
-						value={
-							apiConfiguration?.anthropicCustomModelInfo?.contextWindow?.toString() ||
-							openAiModelInfoSaneDefaults.contextWindow?.toString() ||
-							""
-						}
+						value={getCustomModelInfo().contextWindow?.toString() || ""}
 						type="text"
-						style={{
-							borderColor: (() => {
-								const value = apiConfiguration?.anthropicCustomModelInfo?.contextWindow
-
-								if (!value) {
-									return "var(--vscode-input-border)"
-								}
-
-								return value > 0 ? "var(--vscode-charts-green)" : "var(--vscode-errorForeground)"
-							})(),
-						}}
 						onInput={handleInputChange("anthropicCustomModelInfo", (e) => {
-							const value = (e.target as HTMLInputElement).value
-							const parsed = parseInt(value)
+							const value = parseInt((e.target as HTMLInputElement).value)
 
 							return {
-								...(apiConfiguration?.anthropicCustomModelInfo || openAiModelInfoSaneDefaults),
-								contextWindow: isNaN(parsed) ? openAiModelInfoSaneDefaults.contextWindow : parsed,
+								...getCustomModelInfo(),
+								contextWindow: isNaN(value) ? openAiModelInfoSaneDefaults.contextWindow : value,
 							}
 						})}
 						placeholder={t("settings:placeholders.numbers.contextWindow")}
@@ -249,16 +188,11 @@ export const AnthropicCustom = ({
 				<div>
 					<div className="flex items-center gap-1">
 						<Checkbox
-							checked={
-								apiConfiguration?.anthropicCustomModelInfo?.supportsImages ??
-								openAiModelInfoSaneDefaults.supportsImages
-							}
-							onChange={handleInputChange("anthropicCustomModelInfo", (checked) => {
-								return {
-									...(apiConfiguration?.anthropicCustomModelInfo || openAiModelInfoSaneDefaults),
-									supportsImages: checked,
-								}
-							})}>
+							checked={getCustomModelInfo().supportsImages ?? false}
+							onChange={handleInputChange("anthropicCustomModelInfo", (checked) => ({
+								...getCustomModelInfo(),
+								supportsImages: checked,
+							}))}>
 							<span className="font-medium">
 								{t("settings:providers.customModel.imageSupport.label")}
 							</span>
@@ -270,21 +204,16 @@ export const AnthropicCustom = ({
 							/>
 						</StandardTooltip>
 					</div>
-					<div className="text-sm text-vscode-descriptionForeground pt-1">
-						{t("settings:providers.customModel.imageSupport.description")}
-					</div>
 				</div>
 
 				<div>
 					<div className="flex items-center gap-1">
 						<Checkbox
-							checked={apiConfiguration?.anthropicCustomModelInfo?.supportsPromptCache ?? false}
-							onChange={handleInputChange("anthropicCustomModelInfo", (checked) => {
-								return {
-									...(apiConfiguration?.anthropicCustomModelInfo || openAiModelInfoSaneDefaults),
-									supportsPromptCache: checked,
-								}
-							})}>
+							checked={getCustomModelInfo().supportsPromptCache ?? false}
+							onChange={handleInputChange("anthropicCustomModelInfo", (checked) => ({
+								...getCustomModelInfo(),
+								supportsPromptCache: checked,
+							}))}>
 							<span className="font-medium">{t("settings:providers.customModel.promptCache.label")}</span>
 						</Checkbox>
 						<StandardTooltip content={t("settings:providers.customModel.promptCache.description")}>
@@ -294,36 +223,17 @@ export const AnthropicCustom = ({
 							/>
 						</StandardTooltip>
 					</div>
-					<div className="text-sm text-vscode-descriptionForeground pt-1">
-						{t("settings:providers.customModel.promptCache.description")}
-					</div>
 				</div>
 
 				<div>
 					<VSCodeTextField
-						value={
-							apiConfiguration?.anthropicCustomModelInfo?.inputPrice?.toString() ??
-							openAiModelInfoSaneDefaults.inputPrice?.toString() ??
-							""
-						}
+						value={getCustomModelInfo().inputPrice?.toString() ?? ""}
 						type="text"
-						style={{
-							borderColor: (() => {
-								const value = apiConfiguration?.anthropicCustomModelInfo?.inputPrice
-
-								if (!value && value !== 0) {
-									return "var(--vscode-input-border)"
-								}
-
-								return value >= 0 ? "var(--vscode-charts-green)" : "var(--vscode-errorForeground)"
-							})(),
-						}}
 						onChange={handleInputChange("anthropicCustomModelInfo", (e) => {
-							const value = (e.target as HTMLInputElement).value
-							const parsed = parseFloat(value)
+							const parsed = parseFloat((e.target as HTMLInputElement).value)
 
 							return {
-								...(apiConfiguration?.anthropicCustomModelInfo ?? openAiModelInfoSaneDefaults),
+								...getCustomModelInfo(),
 								inputPrice: isNaN(parsed) ? openAiModelInfoSaneDefaults.inputPrice : parsed,
 							}
 						})}
@@ -345,29 +255,13 @@ export const AnthropicCustom = ({
 
 				<div>
 					<VSCodeTextField
-						value={
-							apiConfiguration?.anthropicCustomModelInfo?.outputPrice?.toString() ||
-							openAiModelInfoSaneDefaults.outputPrice?.toString() ||
-							""
-						}
+						value={getCustomModelInfo().outputPrice?.toString() ?? ""}
 						type="text"
-						style={{
-							borderColor: (() => {
-								const value = apiConfiguration?.anthropicCustomModelInfo?.outputPrice
-
-								if (!value && value !== 0) {
-									return "var(--vscode-input-border)"
-								}
-
-								return value >= 0 ? "var(--vscode-charts-green)" : "var(--vscode-errorForeground)"
-							})(),
-						}}
 						onChange={handleInputChange("anthropicCustomModelInfo", (e) => {
-							const value = (e.target as HTMLInputElement).value
-							const parsed = parseFloat(value)
+							const parsed = parseFloat((e.target as HTMLInputElement).value)
 
 							return {
-								...(apiConfiguration?.anthropicCustomModelInfo || openAiModelInfoSaneDefaults),
+								...getCustomModelInfo(),
 								outputPrice: isNaN(parsed) ? openAiModelInfoSaneDefaults.outputPrice : parsed,
 							}
 						})}
@@ -387,90 +281,44 @@ export const AnthropicCustom = ({
 					</VSCodeTextField>
 				</div>
 
-				{apiConfiguration?.anthropicCustomModelInfo?.supportsPromptCache && (
+				{getCustomModelInfo().supportsPromptCache && (
 					<>
 						<div>
 							<VSCodeTextField
-								value={apiConfiguration?.anthropicCustomModelInfo?.cacheReadsPrice?.toString() ?? "0"}
+								value={getCustomModelInfo().cacheReadsPrice?.toString() ?? "0"}
 								type="text"
-								style={{
-									borderColor: (() => {
-										const value = apiConfiguration?.anthropicCustomModelInfo?.cacheReadsPrice
-
-										if (!value && value !== 0) {
-											return "var(--vscode-input-border)"
-										}
-
-										return value >= 0
-											? "var(--vscode-charts-green)"
-											: "var(--vscode-errorForeground)"
-									})(),
-								}}
 								onChange={handleInputChange("anthropicCustomModelInfo", (e) => {
-									const value = (e.target as HTMLInputElement).value
-									const parsed = parseFloat(value)
+									const parsed = parseFloat((e.target as HTMLInputElement).value)
 
 									return {
-										...(apiConfiguration?.anthropicCustomModelInfo ?? openAiModelInfoSaneDefaults),
+										...getCustomModelInfo(),
 										cacheReadsPrice: isNaN(parsed) ? 0 : parsed,
 									}
 								})}
 								placeholder={t("settings:placeholders.numbers.inputPrice")}
 								className="w-full">
-								<div className="flex items-center gap-1">
-									<span className="font-medium">
-										{t("settings:providers.customModel.pricing.cacheReads.label")}
-									</span>
-									<StandardTooltip
-										content={t("settings:providers.customModel.pricing.cacheReads.description")}>
-										<i
-											className="codicon codicon-info text-vscode-descriptionForeground"
-											style={{ fontSize: "12px" }}
-										/>
-									</StandardTooltip>
-								</div>
+								<span className="font-medium">
+									{t("settings:providers.customModel.pricing.cacheReads.label")}
+								</span>
 							</VSCodeTextField>
 						</div>
 						<div>
 							<VSCodeTextField
-								value={apiConfiguration?.anthropicCustomModelInfo?.cacheWritesPrice?.toString() ?? "0"}
+								value={getCustomModelInfo().cacheWritesPrice?.toString() ?? "0"}
 								type="text"
-								style={{
-									borderColor: (() => {
-										const value = apiConfiguration?.anthropicCustomModelInfo?.cacheWritesPrice
-
-										if (!value && value !== 0) {
-											return "var(--vscode-input-border)"
-										}
-
-										return value >= 0
-											? "var(--vscode-charts-green)"
-											: "var(--vscode-errorForeground)"
-									})(),
-								}}
 								onChange={handleInputChange("anthropicCustomModelInfo", (e) => {
-									const value = (e.target as HTMLInputElement).value
-									const parsed = parseFloat(value)
+									const parsed = parseFloat((e.target as HTMLInputElement).value)
 
 									return {
-										...(apiConfiguration?.anthropicCustomModelInfo ?? openAiModelInfoSaneDefaults),
+										...getCustomModelInfo(),
 										cacheWritesPrice: isNaN(parsed) ? 0 : parsed,
 									}
 								})}
 								placeholder={t("settings:placeholders.numbers.cacheWritePrice")}
 								className="w-full">
-								<div className="flex items-center gap-1">
-									<label className="block font-medium mb-1">
-										{t("settings:providers.customModel.pricing.cacheWrites.label")}
-									</label>
-									<StandardTooltip
-										content={t("settings:providers.customModel.pricing.cacheWrites.description")}>
-										<i
-											className="codicon codicon-info text-vscode-descriptionForeground"
-											style={{ fontSize: "12px" }}
-										/>
-									</StandardTooltip>
-								</div>
+								<label className="block font-medium mb-1">
+									{t("settings:providers.customModel.pricing.cacheWrites.label")}
+								</label>
 							</VSCodeTextField>
 						</div>
 					</>
@@ -478,7 +326,14 @@ export const AnthropicCustom = ({
 
 				<Button
 					variant="secondary"
-					onClick={() => setApiConfigurationField("anthropicCustomModelInfo", openAiModelInfoSaneDefaults)}>
+					onClick={() =>
+						setApiConfigurationField("anthropicCustomModelInfo", {
+							...openAiModelInfoSaneDefaults,
+							...(anthropicModels[
+								apiConfiguration.anthropicCustomModelId as keyof typeof anthropicModels
+							] || {}),
+						})
+					}>
 					{t("settings:providers.customModel.resetDefaults")}
 				</Button>
 			</div>
