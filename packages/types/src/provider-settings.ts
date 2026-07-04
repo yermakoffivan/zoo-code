@@ -6,6 +6,7 @@ import {
 	anthropicModels,
 	basetenModels,
 	bedrockModels,
+	claudeCodeModels,
 	deepSeekModels,
 	fireworksModels,
 	friendliModels,
@@ -118,6 +119,7 @@ export const providerNames = [
 	"anthropic",
 	"bedrock",
 	"baseten",
+	"claude-code",
 	"deepseek",
 	"fireworks",
 	"friendli",
@@ -303,6 +305,11 @@ const openAiCodexSchema = apiModelIdProviderModelSchema.extend({
 	// No additional settings needed - uses OAuth authentication
 })
 
+const claudeCodeSchema = apiModelIdProviderModelSchema.extend({
+	// No API key - authentication is handled externally via `claude login`.
+	claudeCodeCliPath: z.string().optional(),
+})
+
 const openAiNativeSchema = apiModelIdProviderModelSchema.extend({
 	openAiNativeApiKey: z.string().optional(),
 	openAiNativeBaseUrl: z.string().optional(),
@@ -439,6 +446,7 @@ export const providerSettingsSchemaDiscriminated = z.discriminatedUnion("apiProv
 	geminiSchema.merge(z.object({ apiProvider: z.literal("gemini") })),
 	geminiCliSchema.merge(z.object({ apiProvider: z.literal("gemini-cli") })),
 	openAiCodexSchema.merge(z.object({ apiProvider: z.literal("openai-codex") })),
+	claudeCodeSchema.merge(z.object({ apiProvider: z.literal("claude-code") })),
 	openAiNativeSchema.merge(z.object({ apiProvider: z.literal("openai-native") })),
 	mistralSchema.merge(z.object({ apiProvider: z.literal("mistral") })),
 	deepSeekSchema.merge(z.object({ apiProvider: z.literal("deepseek") })),
@@ -476,6 +484,7 @@ export const providerSettingsSchema = z.object({
 	...geminiSchema.shape,
 	...geminiCliSchema.shape,
 	...openAiCodexSchema.shape,
+	...claudeCodeSchema.shape,
 	...openAiNativeSchema.shape,
 	...mistralSchema.shape,
 	...deepSeekSchema.shape,
@@ -553,6 +562,7 @@ export const modelIdKeysByProvider: Record<TypicalProvider, ModelIdKey> = {
 	bedrock: "apiModelId",
 	vertex: "apiModelId",
 	"openai-codex": "apiModelId",
+	"claude-code": "apiModelId",
 	"openai-native": "openAiModelId",
 	ollama: "ollamaModelId",
 	lmstudio: "lmStudioModelId",
@@ -681,6 +691,11 @@ export const MODELS_BY_PROVIDER: Record<
 		id: "openai-codex",
 		label: "OpenAI - ChatGPT Plus/Pro",
 		models: Object.keys(openAiCodexModels),
+	},
+	"claude-code": {
+		id: "claude-code",
+		label: "Claude Code (Subscription)",
+		models: Object.keys(claudeCodeModels),
 	},
 	"openai-native": {
 		id: "openai-native",
