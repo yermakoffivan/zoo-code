@@ -22,6 +22,7 @@ import {
 	checkoutDiffPayloadSchema,
 	checkoutRestorePayloadSchema,
 	getCompletionCheckpoint,
+	isTelemetryOptedIn,
 } from "@roo-code/types"
 import { customToolRegistry } from "@roo-code/core"
 import { CloudService } from "@roo-code/cloud"
@@ -628,11 +629,11 @@ export const webviewMessageHandler = async (
 					),
 				)
 
-			// Enable telemetry by default (when unset) or when explicitly enabled
+			// Only capture telemetry once the user has explicitly opted in; "unset" (no
+			// choice made yet) and "disabled" are both treated as not opted in.
 			provider.getStateToPostToWebview().then((state) => {
 				const { telemetrySetting } = state
-				const isOptedIn = telemetrySetting !== "disabled"
-				TelemetryService.instance.updateTelemetryState(isOptedIn)
+				TelemetryService.instance.updateTelemetryState(isTelemetryOptedIn(telemetrySetting))
 			})
 
 			provider.isViewLaunched = true
@@ -2461,8 +2462,8 @@ export const webviewMessageHandler = async (
 		case "telemetrySetting": {
 			const telemetrySetting = message.text as TelemetrySetting
 			const previousSetting = getGlobalState("telemetrySetting") || "unset"
-			const isOptedIn = telemetrySetting !== "disabled"
-			const wasPreviouslyOptedIn = previousSetting !== "disabled"
+			const isOptedIn = isTelemetryOptedIn(telemetrySetting)
+			const wasPreviouslyOptedIn = isTelemetryOptedIn(previousSetting)
 
 			// If turning telemetry OFF, fire event BEFORE disabling
 			if (wasPreviouslyOptedIn && !isOptedIn && TelemetryService.hasInstance()) {
