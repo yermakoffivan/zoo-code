@@ -21,7 +21,7 @@
 		"@types/vscode": "1.100.0",
 		"@vscode/test-electron": "2.5.2",
 		"glob": "11.1.0",
-		"mocha": "11.2.2",
+		"mocha": "11.7.6",
 		"rimraf": "6.0.1"
 	}
 }
