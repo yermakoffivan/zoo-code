@@ -33,8 +33,8 @@ Szybki przewodnik po przejściu z Roo Code do Zoo Code znajdziesz w [przewodniku
 ## Nowości w v3.66.0
 
 - **Obsługa Claude Sonnet 5** — najnowszy model Claude jest teraz dostępny u dostawców Anthropic, Bedrock i Vertex
-- **Aktualizacja do Semble v0.4.1** — spłaszczony parsing wyników i zlokalizowane komunikaty stanu
-- **Strażnik przejścia stanu cyklu życia zadań** — nowy strażnik przejścia stanu i uzgadnianie delegacji przy uruchomieniu zapobiegają nieprawidłowym przejściom stanu zadań
+- **Usprawnienia indeksowania kodu w Semble v0.4.1** — spłaszczone przetwarzanie wyników i zlokalizowane komunikaty stanu sprawiają, że wyniki indeksowania i informacje o stanie są bardziej niezawodne
+- **Poprawki niezawodności zadań i delegacji** — strażniki przejść stanu, uzgadnianie delegacji przy uruchomieniu oraz atomowe ponowne otwieranie zadania nadrzędnego ograniczają nieprawidłowe zmiany stanu zadań i problemy z przekazywaniem delegacji
 
 ## Co Zoo Code może zrobić dla CIEBIE?
 

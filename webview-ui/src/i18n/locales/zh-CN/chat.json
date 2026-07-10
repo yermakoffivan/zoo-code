@@ -343,8 +343,8 @@
 		"release": {
 			"heading": "新增功能：",
 			"highlight1": "Claude Sonnet 5 支持 — 最新 Claude 模型现已在 Anthropic、Bedrock 和 Vertex 提供商上可用。",
-			"highlight2": "Semble v0.4.1 升级 — 扁平化的结果解析和本地化的状态消息。",
-			"highlight3": "任务生命周期状态转换守卫 — 新的状态转换守卫和启动时的委派对账可防止无效的任务状态转换。"
+			"highlight2": "Semble v0.4.1 代码索引改进 — 扁平化的结果解析和本地化的状态消息让索引结果和状态反馈更可靠。",
+			"highlight3": "任务与委派可靠性修复 — 状态转换守卫、启动时的委派对账，以及父任务的原子化重新打开，可减少无效的任务状态变更和委派交接问题。"
 		},
 		"cloudAgents": {
 			"heading": "云端新功能：",

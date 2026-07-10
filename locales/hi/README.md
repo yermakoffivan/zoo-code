@@ -33,8 +33,8 @@ Roo Code से Zoo Code में आने के लिए एक quick guide
 ## v3.66.0 में नया क्या है
 
 - **Claude Sonnet 5 समर्थन** — नवीनतम Claude मॉडल अब Anthropic, Bedrock और Vertex प्रदाताओं पर उपलब्ध है
-- **Semble v0.4.1 अपग्रेड** — चपटा परिणाम पार्सिंग और स्थानीयकृत स्थिति संदेश
-- **कार्य-जीवनचक्र स्थिति संक्रमण गार्ड** — एक नया स्थिति संक्रमण गार्ड और स्टार्टअप प्रतिनिधिमंडल मेल-मिलाप अमान्य कार्य स्थिति संक्रमण को रोकता है
+- **Semble v0.4.1 code indexing सुधार** — flattened result parsing और स्थानीयकृत status messages, indexing results और status feedback को ज़्यादा भरोसेमंद बनाते हैं
+- **टास्क और delegation reliability fixes** — status transition guards, startup delegation reconciliation, और parent task को atomic तरीके से फिर से खोलना invalid task state changes और delegation handoff issues को कम करते हैं
 
 ## Zoo Code आपके लिए क्या कर सकता है?
 

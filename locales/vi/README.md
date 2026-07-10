@@ -33,8 +33,8 @@ Bạn có thể xem hướng dẫn nhanh để chuyển từ Roo Code sang Zoo C
 ## Điểm mới trong v3.66.0
 
 - **Hỗ trợ Claude Sonnet 5** — mô hình Claude mới nhất hiện có sẵn trên các nhà cung cấp Anthropic, Bedrock và Vertex
-- **Nâng cấp lên Semble v0.4.1** — phân tích kết quả làm phẳng và thông điệp trạng thái đã địa phương hóa
-- **Bảo vệ chuyển đổi trạng thái vòng đời tác vụ** — một bảo vệ chuyển đổi trạng thái mới và đối chiếu ủy quyền khi khởi động ngăn chặn các chuyển đổi trạng thái tác vụ không hợp lệ
+- **Cải thiện lập chỉ mục mã trong Semble v0.4.1** — việc phân tích kết quả đã làm phẳng và các thông báo trạng thái đã bản địa hóa giúp kết quả lập chỉ mục và phản hồi trạng thái đáng tin cậy hơn
+- **Các bản sửa lỗi về độ tin cậy của tác vụ và ủy quyền** — các cơ chế bảo vệ chuyển đổi trạng thái, đối soát ủy quyền khi khởi động và việc mở lại tác vụ cha theo cách nguyên tử giúp giảm các thay đổi trạng thái tác vụ không hợp lệ và các vấn đề bàn giao ủy quyền
 
 ## Zoo Code có thể làm gì cho BẠN?
 

@@ -213,7 +213,7 @@ export class ClineProvider
 
 	public isViewLaunched = false
 	public settingsImportedAt?: number
-	public readonly latestAnnouncementId = "jul-2026-v3.66.0-claude-sonnet-5-semble-task-lifecycle" // v3.66.0 Claude Sonnet 5 support, Semble v0.4.1 upgrade, task-lifecycle status transition guard
+	public readonly latestAnnouncementId = "jul-2026-v3.66.0-claude-sonnet-5-semble-delegation-reliability" // v3.66.0 Claude Sonnet 5 support, Semble v0.4.1 code indexing improvements, task and delegation reliability fixes
 	public readonly providerSettingsManager: ProviderSettingsManager
 	public readonly customModesManager: CustomModesManager
 
@@ -2382,8 +2382,9 @@ export class ClineProvider
 		}
 
 		try {
-			const { isZooCodeAuthenticated, getCachedZooCodeUserInfo, getZooCodeBaseUrl } =
-				await import("../../services/zoo-code-auth")
+			const { isZooCodeAuthenticated, getCachedZooCodeUserInfo, getZooCodeBaseUrl } = await import(
+				"../../services/zoo-code-auth"
+			)
 			const userInfo = getCachedZooCodeUserInfo()
 			zooCodeState = {
 				zooCodeIsAuthenticated: await isZooCodeAuthenticated(),

@@ -361,8 +361,8 @@
 		"release": {
 			"heading": "What's New:",
 			"highlight1": "Claude Sonnet 5 support — the latest Claude model is now available across Anthropic, Bedrock, and Vertex providers.",
-			"highlight2": "Semble v0.4.1 upgrade — flattened result parsing and localized status messages.",
-			"highlight3": "Task-lifecycle status transition guard — a new status transition guard and startup delegation reconciliation prevent invalid task state transitions."
+			"highlight2": "Semble v0.4.1 code indexing improvements — flattened result parsing and localized status messages make indexing results and status feedback more reliable.",
+			"highlight3": "Task and delegation reliability fixes — status transition guards, startup delegation reconciliation, and atomic parent reopening reduce invalid task state changes and delegation handoff issues."
 		},
 		"cloudAgents": {
 			"heading": "New in the Cloud:",

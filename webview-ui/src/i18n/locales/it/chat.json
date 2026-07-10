@@ -342,8 +342,8 @@
 		"release": {
 			"heading": "Novità:",
 			"highlight1": "Supporto per Claude Sonnet 5 — l'ultimo modello di Claude è ora disponibile sui provider Anthropic, Bedrock e Vertex.",
-			"highlight2": "Aggiornamento a Semble v0.4.1 — analisi dei risultati appiattita e messaggi di stato localizzati.",
-			"highlight3": "Guardia di transizione di stato del ciclo di vita delle attività — una nuova guardia di transizione di stato e la riconciliazione della delega all'avvio prevengono transizioni di stato delle attività non valide."
+			"highlight2": "Miglioramenti all'indicizzazione del codice in Semble v0.4.1 — l'analisi appiattita dei risultati e i messaggi di stato localizzati rendono più affidabili i risultati dell'indicizzazione e il feedback di stato.",
+			"highlight3": "Correzioni di affidabilità per attività e delega — le guardie di transizione di stato, la riconciliazione della delega all'avvio e la riapertura atomica dell'attività padre riducono i cambi di stato non validi delle attività e i problemi nel passaggio delle deleghe."
 		},
 		"cloudAgents": {
 			"heading": "Novità nel Cloud:",

@@ -33,8 +33,8 @@ Roo Code'dan Zoo Code'a geçmek için hızlı bir rehberi [Roo→Zoo geçiş reh
 ## v3.66.0'daki Yenilikler
 
 - **Claude Sonnet 5 desteği** — en yeni Claude modeli artık Anthropic, Bedrock ve Vertex sağlayıcılarında kullanılabilir
-- **Semble v0.4.1 yükseltmesi** — düzleştirilmiş sonuç ayrıştırma ve yerelleştirilmiş durum mesajları
-- **Görev yaşam döngüsü durum geçiş koruması** — yeni bir durum geçiş koruması ve başlangıç yetkilendirme uzlaştırması geçersiz görev durum geçişlerini önler
+- **Semble v0.4.1 kod indeksleme iyileştirmeleri** — düzleştirilmiş sonuç ayrıştırma ve yerelleştirilmiş durum mesajları, indeksleme sonuçlarını ve durum geri bildirimini daha güvenilir hale getiriyor
+- **Görev ve yetki devri güvenilirliği düzeltmeleri** — durum geçiş korumaları, başlangıçta yetki devri uzlaştırması ve üst görevin atomik olarak yeniden açılması, geçersiz görev durumu değişikliklerini ve yetki devri aktarım sorunlarını azaltıyor
 
 ## Zoo Code SİZİN İçin Ne Yapabilir?
 

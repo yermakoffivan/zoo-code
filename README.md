@@ -56,8 +56,8 @@ for this exact support, so if you are having problems or if you have question, j
 ## What's New in v3.66.0
 
 - **Claude Sonnet 5 support** — the latest Claude model is now available across Anthropic, Bedrock, and Vertex providers
-- **Semble v0.4.1 upgrade** — flattened result parsing and localized status messages
-- **Task-lifecycle status transition guard** — a new status transition guard and startup delegation reconciliation prevent invalid task state transitions
+- **Semble v0.4.1 code indexing improvements** — flattened result parsing and localized status messages make indexing results and status feedback more reliable
+- **Task and delegation reliability fixes** — status transition guards, startup delegation reconciliation, and atomic parent reopening reduce invalid task state changes and delegation handoff issues
 - Fix: LiteLLM cache key collision and silent fallback to a non-existent default model
 - Fix: reliable auto context condensing for the VS Code Language Model API
 - Fix: ThinkingBudget now supports `xhigh` and all extended reasoning effort values
@@ -92,7 +92,7 @@ for this exact support, so if you are having problems or if you have question, j
 - [简体中文](locales/zh-CN/README.md)
 - [繁體中文](locales/zh-TW/README.md)
 - ...
-    </details>
+  </details>
 
 ---
 

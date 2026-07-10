@@ -33,8 +33,8 @@ Kamu bisa menemukan panduan singkat untuk berpindah dari Roo Code ke Zoo Code di
 ## Yang Baru di v3.66.0
 
 - **Dukungan Claude Sonnet 5** — model Claude terbaru kini tersedia di penyedia Anthropic, Bedrock, dan Vertex
-- **Peningkatan ke Semble v0.4.1** — penguraian hasil yang diratakan dan pesan status terlokalisasi
-- **Penjaga transisi status siklus hidup tugas** — penjaga transisi status baru dan rekonsiliasi delegasi saat startup mencegah transisi status tugas yang tidak valid
+- **Peningkatan pengindeksan kode Semble v0.4.1** — parsing hasil yang diratakan dan pesan status terlokalisasi membuat hasil pengindeksan dan umpan balik status lebih andal
+- **Perbaikan keandalan tugas dan delegasi** — penjaga transisi status, rekonsiliasi delegasi saat startup, dan pembukaan ulang tugas induk secara atomik mengurangi perubahan status tugas yang tidak valid dan masalah serah terima delegasi
 
 ## Apa yang Bisa Zoo Code Lakukan Untuk ANDA?
 

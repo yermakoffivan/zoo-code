@@ -315,8 +315,8 @@
 		"release": {
 			"heading": "Wat is nieuw:",
 			"highlight1": "Claude Sonnet 5 ondersteuning — het nieuwste Claude-model is nu beschikbaar bij de Anthropic, Bedrock en Vertex providers.",
-			"highlight2": "Semble v0.4.1 upgrade — afgevlakte resultaatverwerking en gelokaliseerde statusberichten.",
-			"highlight3": "Taak-levenscyclus statusovergangsbewaking — een nieuwe statusovergangsbewaking en opstart-delegatieverzoening voorkomen ongeldige taakstatusovergangen."
+			"highlight2": "Semble v0.4.1 verbeteringen voor code-indexering — afgevlakte resultaatverwerking en gelokaliseerde statusberichten maken indexeringsresultaten en statusfeedback betrouwbaarder.",
+			"highlight3": "Betrouwbaarheidsfixes voor taken en delegatie — statusovergangsbewaking, opstart-delegatieverzoening en het atomair heropenen van de bovenliggende taak verminderen ongeldige taakstatuswijzigingen en problemen bij de overdracht van delegaties."
 		},
 		"cloudAgents": {
 			"heading": "Nieuw in de Cloud:",

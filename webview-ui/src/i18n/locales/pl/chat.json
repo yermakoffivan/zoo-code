@@ -342,8 +342,8 @@
 		"release": {
 			"heading": "Co nowego:",
 			"highlight1": "Obsługa Claude Sonnet 5 — najnowszy model Claude jest teraz dostępny u dostawców Anthropic, Bedrock i Vertex.",
-			"highlight2": "Aktualizacja do Semble v0.4.1 — spłaszczony parsing wyników i zlokalizowane komunikaty stanu.",
-			"highlight3": "Strażnik przejścia stanu cyklu życia zadań — nowy strażnik przejścia stanu i uzgadnianie delegacji przy uruchomieniu zapobiegają nieprawidłowym przejściom stanu zadań."
+			"highlight2": "Usprawnienia indeksowania kodu w Semble v0.4.1 — spłaszczone przetwarzanie wyników i zlokalizowane komunikaty stanu sprawiają, że wyniki indeksowania i informacje o stanie są bardziej niezawodne.",
+			"highlight3": "Poprawki niezawodności zadań i delegacji — strażniki przejść stanu, uzgadnianie delegacji przy uruchomieniu oraz atomowe ponowne otwieranie zadania nadrzędnego ograniczają nieprawidłowe zmiany stanu zadań i problemy z przekazywaniem delegacji."
 		},
 		"cloudAgents": {
 			"heading": "Nowości w chmurze:",

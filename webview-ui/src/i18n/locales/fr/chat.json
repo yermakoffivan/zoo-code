@@ -342,8 +342,8 @@
 		"release": {
 			"heading": "Nouveautés :",
 			"highlight1": "Prise en charge de Claude Sonnet 5 — le dernier modèle de Claude est désormais disponible auprès des fournisseurs Anthropic, Bedrock et Vertex.",
-			"highlight2": "Mise à niveau vers Semble v0.4.1 — analyse aplatie des résultats et messages d'état localisés.",
-			"highlight3": "Garde de transition d'état du cycle de vie des tâches — une nouvelle garde de transition d'état et la réconciliation de délégation au démarrage empêchent les transitions d'état de tâche invalides."
+			"highlight2": "Améliorations de l'indexation du code dans Semble v0.4.1 — l'analyse aplatie des résultats et les messages d'état localisés rendent les résultats d'indexation et les retours d'état plus fiables.",
+			"highlight3": "Correctifs de fiabilité pour les tâches et la délégation — les garde-fous de transition d'état, la réconciliation de délégation au démarrage et la réouverture atomique de la tâche parente réduisent les changements d'état de tâche invalides et les problèmes de transfert de délégation."
 		},
 		"cloudAgents": {
 			"heading": "Nouveautés dans le Cloud :",
