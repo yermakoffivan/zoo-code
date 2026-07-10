@@ -1203,23 +1203,38 @@ export const webviewMessageHandler = async (
 		case "requestOllamaModels": {
 			// Specific handler for Ollama models only.
 			const { apiConfiguration: ollamaApiConfig } = await provider.getState()
+			// Prefer the baseUrl/apiKey from the message values (which reflect
+			// the user's unsaved edits in the settings form) over the saved
+			// state, so the refresh uses the URL the user is actually looking
+			// at — not the stale one from before they started editing.
+			const baseUrl = message.values?.baseUrl ?? ollamaApiConfig.ollamaBaseUrl
+			const apiKey = message.values?.apiKey ?? ollamaApiConfig.ollamaApiKey
 			try {
 				const ollamaOptions = {
 					provider: "ollama" as const,
-					baseUrl: ollamaApiConfig.ollamaBaseUrl,
-					apiKey: ollamaApiConfig.ollamaApiKey,
+					baseUrl,
+					apiKey,
 				}
 				// Flush cache and refresh to ensure fresh models.
 				await flushModels(ollamaOptions, true)
 
 				const ollamaModels = await getModels(ollamaOptions)
 
-				if (Object.keys(ollamaModels).length > 0) {
-					provider.postMessageToWebview({ type: "ollamaModels", ollamaModels: ollamaModels })
-				}
+				// Always post a response so the webview refresh status can
+				// transition out of "loading" — even when no models are found.
+				provider.postMessageToWebview({ type: "ollamaModels", ollamaModels: ollamaModels })
 			} catch (error) {
-				// Silently fail - user hasn't configured Ollama yet
-				console.debug("Ollama models fetch failed:", error)
+				// Log the error to the output channel for debugging, but still
+				// post an empty response so the webview doesn't stay stuck in
+				// the loading state. Include the error message so the webview
+				// can display it directly in the settings panel.
+				const errorMsg = error instanceof Error ? error.message : String(error)
+				provider.log(`[requestOllamaModels] Failed to fetch models: ${errorMsg}`)
+				provider.postMessageToWebview({
+					type: "ollamaModels",
+					ollamaModels: {},
+					error: errorMsg,
+				})
 			}
 			break
 		}

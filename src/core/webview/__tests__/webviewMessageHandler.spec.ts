@@ -331,6 +331,70 @@ describe("webviewMessageHandler - requestOllamaModels", () => {
 			ollamaModels: mockModels,
 		})
 	})
+
+	it("posts empty models response when no models are found", async () => {
+		mockGetModels.mockResolvedValue({})
+
+		await webviewMessageHandler(mockClineProvider, {
+			type: "requestOllamaModels",
+		})
+
+		expect(mockClineProvider.postMessageToWebview).toHaveBeenCalledWith({
+			type: "ollamaModels",
+			ollamaModels: {},
+		})
+	})
+
+	it("posts empty models response with error message and logs to output on fetch failure", async () => {
+		mockGetModels.mockRejectedValue(new Error("Connection refused"))
+
+		await webviewMessageHandler(mockClineProvider, {
+			type: "requestOllamaModels",
+		})
+
+		expect(mockClineProvider.postMessageToWebview).toHaveBeenCalledWith({
+			type: "ollamaModels",
+			ollamaModels: {},
+			error: "Connection refused",
+		})
+
+		expect(mockClineProvider.log).toHaveBeenCalledWith(
+			expect.stringContaining("[requestOllamaModels] Failed to fetch models: Connection refused"),
+		)
+	})
+
+	it("uses baseUrl from message values over saved state", async () => {
+		const mockModels: ModelRecord = {
+			"remote-model": {
+				maxTokens: 4096,
+				contextWindow: 8192,
+				supportsPromptCache: false,
+				description: "Remote model",
+			},
+		}
+
+		mockGetModels.mockResolvedValue(mockModels)
+
+		await webviewMessageHandler(mockClineProvider, {
+			type: "requestOllamaModels",
+			values: {
+				baseUrl: "https://ollama.example.com",
+				apiKey: "secret-key",
+			},
+		})
+
+		// Should use the URL from message values, not the saved state
+		expect(mockGetModels).toHaveBeenCalledWith({
+			provider: "ollama",
+			baseUrl: "https://ollama.example.com",
+			apiKey: "secret-key",
+		})
+
+		expect(mockClineProvider.postMessageToWebview).toHaveBeenCalledWith({
+			type: "ollamaModels",
+			ollamaModels: mockModels,
+		})
+	})
 })
 
 describe("webviewMessageHandler - requestRouterModels", () => {
